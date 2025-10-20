@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyTitle>RhinoAIRenderPlugin</AssemblyTitle>
+    <AssemblyDescription>Rhino Plugin for AI Render functionality</AssemblyDescription>
+    <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RhinoCommon" Version="8.0.3" />
+  </ItemGroup>
+
+</Project>
