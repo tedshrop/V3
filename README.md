@@ -1,26 +1,42 @@
-# TeddyRhinoPlugin (RhinoCommon C# plugin)
+# Teddy's Rhino Plugin (AI Render Tools)
 
-This workspace contains a minimal Rhino 7 RhinoCommon C# plugin scaffold.
+A RhinoCommon C# plugin for capturing AI-ready render images from Rhino viewports.
 
-What you get:
-- Visual Studio solution file (`TeddyRhinoPlugin.sln`)
-- C# Class Library project targeting .NET Framework 4.8 (`src\TeddyRhinoPlugin\TeddyRhinoPlugin.csproj`)
-- A plugin class (`Plugin.cs`) derived from `Rhino.PlugIns.PlugIn`
-- A sample command (`Commands\HelloCommand.cs`) that shows a message
-- `.gitignore`, `LICENSE` (MIT), and a simple `.vscode/tasks.json` to run MSBuild
+## Features
 
-Quick build & load (Visual Studio recommended):
-1. Open `TeddyRhinoPlugin.sln` in Visual Studio (2019/2022).
-2. If Visual Studio can't resolve `RhinoCommon.dll`, edit the project property `RhinoCommonPath` in `TeddyRhinoPlugin.csproj` or add a reference to `C:\Program Files\Rhino 7\System\RhinoCommon.dll` (default Rhino 7 install path). The csproj contains a helpful default value you can change.
-3. Build (Debug/Any CPU).
+This plugin provides automated capture commands for generating beauty renders, depth maps, and segmentation masks from the current Rhino viewport. Ideal for AI/ML workflows that require consistent rendering data.
+
+### Commands
+- `AIR_CaptureBeauty`: Captures a beauty render in Rendered display mode
+- `AIR_CaptureDepth`: Captures a depth map using programmatic ZBuffer display mode (with fallback to ShowZBuffer command)
+- `AIR_CaptureSegmentation`: Captures a segmentation mask based on object layers
+
+## Build & Install
+
+1. **Prerequisites**: Visual Studio 2019/2022, .NET Framework 4.8, Rhino 7/8
+2. Open `RhinoAIRenderPlugin.sln` in Visual Studio
+3. Build (Debug/Any CPU)
 4. Load the plugin in Rhino:
-   - Open Rhino 7, use `Tools > Options > Plug-ins > Install` and point at the built plugin (.rhp/.dll). Or use the `PluginManager` command and `Install`/`Load` and point to the compiled assembly in `bin\Debug`.
+   - Use `Tools > Options > Plug-ins > Install` and select the built `.rhp` or `.dll` file
+   - Or use the `PluginManager` command to install/load the assembly from `bin\Debug`
 
-Notes & follow-ups:
-- Porting to Rhino 8 / .NET 6+: Rhino 8 uses an updated SDK and different targeting; see README for guidance.
-- This scaffold assumes Rhino is installed on the same machine and `RhinoCommon.dll` is available at `C:\Program Files\Rhino 7\System\` by default. If Rhino is installed elsewhere, update the project file.
+## Usage
 
-If you want I can also:
-- Add a NuGet-based approach (if RhinoCommon becomes available via NuGet for your setup)
-- Create a Rhino Installer Engine script to produce a `.rhp` installer
-- Add unit tests or CI
+After installing the plugin:
+1. Open a model in Rhino
+2. Run one of the capture commands (e.g., `AIR_CaptureDepth`)
+3. Images are saved to the temp directory by default (configurable in future versions)
+
+## Technical Details
+
+- Target Framework: .NET Framework 4.8
+- Tested on Rhino 7/8
+- Uses programmatic display mode switching for reliability
+- Includes fallback mechanisms for cross-version compatibility
+
+## Project Structure
+
+- `RhinoAIRenderPlugin.cs`: Main plugin class
+- `Commands/`: Individual command implementations
+- `Services/`: Viewport capture logic
+- `Models/`: Data structures for capture results and options

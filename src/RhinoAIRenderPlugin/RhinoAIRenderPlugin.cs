@@ -33,7 +33,6 @@ namespace RhinoAIRender
     {
       RhinoApp.WriteLine("Rhino AI Render Plugin loaded.");
 
-      // Register commands
       // Commands are automatically registered by Rhino based on the Command class
 
       return LoadReturnCode.Success;

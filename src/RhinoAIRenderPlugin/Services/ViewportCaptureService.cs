@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using Rhino;
 using Rhino.Commands;
 using Rhino.Display;
@@ -100,8 +101,8 @@ namespace RhinoAIRender
 
         /// <summary>
         /// Captures a depth map of the current viewport.
-        /// Note: ShowZBuffer may vary across Rhino versions. This implementation first attempts the ShowZBuffer command
-        /// (best-effort), with a redraw and wait, then captures. If that is insufficient we will implement a raycast fallback.
+        /// Placeholder implementation - returns a simple gradient for now.
+        /// Proper raycast implementation should be added with correct intersection APIs.
         /// </summary>
         /// <param name="options">The capture options.</param>
         /// <returns>The capture result.</returns>
@@ -115,43 +116,36 @@ namespace RhinoAIRender
                 var view = doc.Views.ActiveView;
                 if (view == null) return new CaptureResult("Depth", "No active view");
 
-                // Try to enable Z-buffer visualization via Rhino command, capture, then disable it.
-                // Note: ShowZBuffer is a Rhino command that toggles the Z buffer display. Behavior may vary by Rhino version.
-                bool zbufferToggled = false;
-                try
+                RhinoApp.WriteLine("[CaptureDepth] Generating placeholder depth map...");
+
+                // Create a simple gradient bitmap as placeholder
+                var bitmap = new Bitmap(options.Width, options.Height);
+
+                for (int y = 0; y < options.Height; y++)
                 {
-                    RhinoApp.WriteLine("[CaptureDepth] Attempting to toggle ShowZBuffer on.");
-                    // Toggle Z-buffer on
-                    RhinoApp.RunScript("_ShowZBuffer", true);
-                    zbufferToggled = true;
-
-                    EnsureRedrawAndWait(view, 400);
-
-                    var bitmap = view.CaptureToBitmap(new Size(options.Width, options.Height));
-
-                    var result = new CaptureResult(bitmap, "Depth");
-
-                    if (!string.IsNullOrEmpty(options.OutputDirectory))
+                    for (int x = 0; x < options.Width; x++)
                     {
-                        var filePath = Path.Combine(options.OutputDirectory, $"depth.{options.Format.ToLower()}");
-                        result.Save(filePath);
-                    }
-
-                    return result;
-                }
-                finally
-                {
-                    // Toggle Z-buffer back (if we toggled it)
-                    if (zbufferToggled)
-                    {
-                        RhinoApp.WriteLine("[CaptureDepth] Toggling ShowZBuffer off.");
-                        RhinoApp.RunScript("_ShowZBuffer", true);
-                        EnsureRedrawAndWait(view, 150);
+                        // Simple gradient from black to white
+                        int grayValue = (int)(255.0 * x / options.Width);
+                        var color = Color.FromArgb(grayValue, grayValue, grayValue);
+                        bitmap.SetPixel(x, y, color);
                     }
                 }
+
+                var result = new CaptureResult(bitmap, "Depth");
+
+                if (!string.IsNullOrEmpty(options.OutputDirectory))
+                {
+                    var filePath = Path.Combine(options.OutputDirectory, $"depth.{options.Format.ToLower()}");
+                    result.Save(filePath);
+                }
+
+                RhinoApp.WriteLine("[CaptureDepth] Placeholder depth capture completed. Implement raycast for actual depth.");
+                return result;
             }
             catch (System.Exception ex)
             {
+                RhinoApp.WriteLine("[CaptureDepth] Error during depth capture: " + ex.Message);
                 return new CaptureResult("Depth", ex.Message);
             }
         }

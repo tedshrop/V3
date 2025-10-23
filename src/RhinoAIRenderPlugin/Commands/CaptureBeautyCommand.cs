@@ -23,7 +23,7 @@ namespace RhinoAIRender.Commands
         /// <returns>The command result.</returns>
         protected override Result RunCommand(RhinoDoc doc, RunMode mode)
         {
-            // Output directory - using temp for now. Edit to user input later.
+            // Output directory - ng temp for now. Edit to user input later.
             var outputDir = Path.GetTempPath();
 
             var service = new ViewportCaptureService();
